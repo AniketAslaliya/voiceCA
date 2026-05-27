@@ -74,13 +74,13 @@ export default function Landing() {
             <h1 className="landing-title">
               Boliye.
               <br />
-              Baaki bookkeeping
+              Baaki hisaab
               <br />
-              hum kar denge.
+              hum sambhal lenge.
             </h1>
             <p className="landing-subtitle">
               Speak a credit entry, insurance claim, or expense in the language your team already
-              uses. VoiceCA turns it into structured JSON your workflow can use immediately.
+              uses. VoiceCA turns it into structured business memory instantly.
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
