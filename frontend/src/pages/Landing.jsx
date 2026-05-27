@@ -42,20 +42,6 @@ const steps = [
   },
 ];
 
-const sampleEntities = {
-  person: "Ravi",
-  amount: 2500,
-  date: "2026-05-28",
-  item: "grocery udhaari",
-};
-
-const sampleOutput = {
-  type: "credit_entry",
-  confirmation_hindi: "Ravi ka ₹2500 udhaari add ho gaya.",
-  confirmation_english: "Credit entry captured and ready to save.",
-  action_required: "Review once, then save it to the ledger.",
-};
-
 export default function Landing() {
   return (
     <main className="app-shell landing-shell">
@@ -74,9 +60,11 @@ export default function Landing() {
             <h1 className="landing-title">
               Boliye.
               <br />
-              Baaki hisaab
+              Baaki Hisab
               <br />
-              hum sambhal lenge.
+              hum Sambhal
+              <br />
+              Lenge!!
             </h1>
             <p className="landing-subtitle">
               Speak a credit entry, insurance claim, or expense in the language your team already
@@ -109,34 +97,6 @@ export default function Landing() {
               ))}
             </div>
           </div>
-
-          <aside className="landing-preview fade-up" aria-label="VoiceCA sample output">
-            <div className="preview-orb preview-orb-one" aria-hidden="true" />
-            <div className="preview-orb preview-orb-two" aria-hidden="true" />
-
-            <div className="preview-panel card">
-              <div className="preview-panel-head">
-                <span className="preview-label">Speech in</span>
-                <span className="preview-chip">Live example</span>
-              </div>
-              <p className="preview-quote">
-                “Ravi ko aaj 2500 rupaye ka grocery udhaari likh do.”
-              </p>
-
-              <div className="preview-divider" />
-
-              <div className="preview-panel-head">
-                <span className="preview-label">JSON out</span>
-                <span className="preview-chip preview-chip-accent">credit_entry</span>
-              </div>
-              <pre className="preview-json">{JSON.stringify(sampleEntities, null, 2)}</pre>
-
-              <div className="preview-response">
-                <p>{sampleOutput.confirmation_hindi}</p>
-                <span>{sampleOutput.action_required}</span>
-              </div>
-            </div>
-          </aside>
         </div>
 
         <section className="landing-section fade-up" id="how-it-works">
