@@ -1,0 +1,59 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="40" x2="1450" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#050606" />
+      <stop offset="1" stop-color="#0D1110" />
+    </linearGradient>
+    <linearGradient id="accent" x1="330" y1="170" x2="1300" y2="750" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4ADE80" stop-opacity="0.95" />
+      <stop offset="1" stop-color="#EAB308" stop-opacity="0.9" />
+    </linearGradient>
+    <filter id="blur" x="0" y="0" width="1600" height="900" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="42" />
+    </filter>
+  </defs>
+  <rect width="1600" height="900" rx="64" fill="url(#bg)" />
+  <circle cx="280" cy="170" r="190" fill="#4ADE80" fill-opacity="0.14" filter="url(#blur)" />
+  <circle cx="1320" cy="180" r="210" fill="#EAB308" fill-opacity="0.12" filter="url(#blur)" />
+  <circle cx="1140" cy="760" r="240" fill="#4ADE80" fill-opacity="0.1" filter="url(#blur)" />
+
+  <rect x="110" y="110" width="1380" height="680" rx="40" fill="#0B0F0E" stroke="rgba(255,255,255,0.08)" />
+
+  <rect x="160" y="160" width="150" height="44" rx="22" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" />
+  <circle cx="188" cy="182" r="8" fill="#4ADE80" />
+  <text x="208" y="189" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#F5F5F5">VoiceCA</text>
+
+  <text x="160" y="320" font-family="Georgia, 'Times New Roman', serif" font-size="112" font-weight="400" fill="#F5F5F5">
+    Boliye. Baaki bookkeeping
+  </text>
+  <text x="160" y="428" font-family="Georgia, 'Times New Roman', serif" font-size="112" font-weight="400" fill="#F5F5F5">
+    hum kar denge.
+  </text>
+
+  <text x="160" y="516" font-family="Inter, Arial, sans-serif" font-size="30" fill="#A3A3A3">
+    Speak in Hindi, English, or Hinglish and get structured business JSON instantly.
+  </text>
+
+  <rect x="160" y="580" width="248" height="66" rx="33" fill="url(#accent)" />
+  <text x="198" y="622" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#06100A">Start free</text>
+
+  <rect x="424" y="580" width="250" height="66" rx="33" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" />
+  <text x="472" y="622" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#F5F5F5">See how it works</text>
+
+  <rect x="960" y="176" width="340" height="472" rx="28" fill="#111514" stroke="rgba(74,222,128,0.18)" />
+  <text x="996" y="226" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#4ADE80">SPEECH IN</text>
+  <text x="996" y="286" font-family="Georgia, 'Times New Roman', serif" font-size="36" fill="#F5F5F5">Ravi ko aaj</text>
+  <text x="996" y="332" font-family="Georgia, 'Times New Roman', serif" font-size="36" fill="#F5F5F5">2500 rupaye ka</text>
+  <text x="996" y="378" font-family="Georgia, 'Times New Roman', serif" font-size="36" fill="#F5F5F5">grocery udhaari.</text>
+
+  <rect x="996" y="418" width="272" height="2" fill="rgba(255,255,255,0.08)" />
+
+  <text x="996" y="470" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#4ADE80">JSON OUT</text>
+  <rect x="996" y="492" width="272" height="112" rx="18" fill="#0B0F0E" stroke="rgba(255,255,255,0.08)" />
+  <text x="1016" y="526" font-family="SFMono-Regular, Consolas, monospace" font-size="20" fill="#C7F9D5">{</text>
+  <text x="1034" y="556" font-family="SFMono-Regular, Consolas, monospace" font-size="20" fill="#C7F9D5">type: credit_entry,</text>
+  <text x="1034" y="586" font-family="SFMono-Regular, Consolas, monospace" font-size="20" fill="#C7F9D5">amount: 2500</text>
+  <text x="1016" y="614" font-family="SFMono-Regular, Consolas, monospace" font-size="20" fill="#C7F9D5">}</text>
+
+  <text x="996" y="658" font-family="Inter, Arial, sans-serif" font-size="20" fill="#F5F5F5">Ravi ka ₹2500 udhaari add ho gaya.</text>
+</svg>

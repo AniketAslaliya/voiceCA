@@ -15,6 +15,8 @@ const GROQ_TRANSCRIBE_MODEL = "whisper-large-v3-turbo";
 const GROQ_INTENT_MODEL = "llama-3.3-70b-versatile";
 const GROQ_VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 const CURRENT_DATE = new Date().toISOString().slice(0, 10);
+const SUPPORTED_LANGUAGES =
+  "Hindi, Hinglish, English, Marathi, Gujarati, Bengali, Tamil, Telugu, Kannada, Malayalam, Punjabi, and Odia";
 
 function hasGroqKey() {
   return process.env.GROQ_API_KEY && process.env.GROQ_API_KEY !== "your_groq_key_here";
@@ -25,13 +27,13 @@ You are VoiceCA, an AI assistant that helps non-technical Indian
 small business owners manage their business by voice.
 
 Today is ${CURRENT_DATE}. Use this as the reference date.
-The user has spoken in Hindi, English, or Hinglish.
+The user may speak in ${SUPPORTED_LANGUAGES}.
 Your job is to:
 1. Identify the intent: credit_entry | insurance_claim | expense |
    reminder | document_query | general
 2. Extract all entities: person names, amounts (INR), dates, types
 3. Generate a structured JSON response
-4. Generate a confirmation message in simple Hindi (under 20 words)
+4. Generate a confirmation message in the user's language when possible
 
 RULES:
 - Always output valid JSON
@@ -49,7 +51,7 @@ OUTPUT FORMAT:
 {
   "type": "credit_entry|insurance_claim|expense|reminder|clarification_needed",
   "entities": { ...extracted fields },
-  "confirmation_hindi": "short confirmation in Hindi",
+  "confirmation_hindi": "short confirmation in the user's language",
   "confirmation_english": "short confirmation in English",
   "action_required": "what happens next"
 }
@@ -58,12 +60,13 @@ OUTPUT FORMAT:
 const DOCUMENT_PROMPT = `
 You are VoiceCA. Read the uploaded business document, notice, bill, or letter.
 Return simple JSON for a non-technical Indian small business owner.
+The user may speak in ${SUPPORTED_LANGUAGES}.
 
 OUTPUT FORMAT:
 {
   "type": "document_query",
   "document_type": "short type",
-  "explanation_hindi": "plain Hindi explanation under 40 words",
+  "explanation_hindi": "plain explanation in the user's language under 40 words",
   "summary_english": "short English summary",
   "action_required": "exact next action",
   "draft_reply_english": "short formal reply if useful"

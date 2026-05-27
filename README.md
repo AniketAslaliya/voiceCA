@@ -1,6 +1,6 @@
 # VoiceCA
 
-VoiceCA is a voice-first MVP for Indian small business owners. Speak in Hindi, English, or Hinglish and the app turns the note into structured business JSON.
+VoiceCA is a voice-first MVP for Indian small business owners. Speak in Hindi, Hinglish, English, or other Indian languages and the app turns the note into structured business JSON.
 
 ## Stack
 
