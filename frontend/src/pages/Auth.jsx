@@ -38,7 +38,7 @@ export default function Auth() {
         >
           <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span className="logo-mark" />
-            <span style={{ fontFamily: "Instrument Serif", fontSize: 30 }}>VoiceCA</span>
+            <span style={{ fontFamily: "Poppins", fontSize: 24, fontWeight: 700 }}>VoiceCA</span>
           </Link>
 
           <div style={{ display: "grid", gap: 12 }}>

@@ -37,7 +37,7 @@ export default function NavBar({ user }) {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span className="logo-mark" />
-          <span style={{ fontFamily: "Instrument Serif", fontSize: 26 }}>VoiceCA</span>
+          <span style={{ fontFamily: "Poppins", fontSize: 22, fontWeight: 700 }}>VoiceCA</span>
         </div>
         <div style={{ position: "relative" }}>
           <button

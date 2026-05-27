@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
 
 :root {
   --bg-primary: #050606;
@@ -40,7 +40,7 @@ body {
     radial-gradient(circle at 50% 108%, rgba(34, 197, 94, 0.1), transparent 28%),
     var(--bg-primary);
   color: var(--text-primary);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -62,8 +62,8 @@ a {
 h1,
 h2,
 h3 {
-  font-family: "Instrument Serif", serif;
-  font-weight: 400;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
 }
 
 input {
@@ -73,7 +73,7 @@ input {
   border-radius: var(--radius-sm);
   padding: 12px 16px;
   color: var(--text-primary);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 15px;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -167,13 +167,13 @@ input:focus {
 .landing-layout {
   display: grid;
   gap: 20px;
-  align-items: center;
+  align-items: start;
 }
 
 .landing-copy {
   display: grid;
   gap: 20px;
-  max-width: 760px;
+  max-width: 620px;
 }
 
 .section-kicker {
@@ -185,15 +185,16 @@ input:focus {
 }
 
 .landing-title {
-  font-size: clamp(56px, 10vw, 128px);
-  line-height: 0.88;
+  font-size: clamp(48px, 7vw, 92px);
+  line-height: 0.94;
   letter-spacing: 0;
+  max-width: 6.7ch;
 }
 
 .landing-subtitle {
-  max-width: 640px;
+  max-width: 580px;
   color: var(--text-secondary);
-  font-size: clamp(18px, 2vw, 22px);
+  font-size: 18px;
   line-height: 1.55;
 }
 
@@ -232,7 +233,9 @@ input:focus {
   position: relative;
   min-height: 460px;
   display: grid;
-  align-items: center;
+  align-items: start;
+  justify-self: end;
+  width: min(100%, 480px);
 }
 
 .preview-orb {
@@ -260,7 +263,7 @@ input:focus {
 
 .preview-panel {
   position: relative;
-  padding: 22px;
+  padding: 20px;
   display: grid;
   gap: 14px;
   overflow: hidden;
@@ -308,10 +311,11 @@ input:focus {
 }
 
 .preview-quote {
-  font-size: clamp(21px, 2.4vw, 28px);
-  line-height: 1.2;
+  font-size: clamp(19px, 1.8vw, 24px);
+  line-height: 1.35;
   color: var(--text-primary);
-  font-family: "Instrument Serif", serif;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
 }
 
 .preview-divider {
@@ -360,8 +364,8 @@ input:focus {
 
 .section-heading h2,
 .landing-cta h2 {
-  font-size: clamp(30px, 4.2vw, 52px);
-  line-height: 1;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.05;
 }
 
 .step-grid {
@@ -389,8 +393,8 @@ input:focus {
 
 .step-card h3,
 .feature-card h3 {
-  font-size: 28px;
-  line-height: 1;
+  font-size: 22px;
+  line-height: 1.15;
 }
 
 .feature-grid {
@@ -437,14 +441,14 @@ input:focus {
 
 @media (min-width: 760px) {
   .landing-page {
-    gap: 36px;
-    padding-top: 16px;
+    gap: 34px;
+    padding-top: 18px;
     padding-bottom: 28px;
   }
 
   .landing-layout {
-    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-    gap: 28px;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 460px);
+    gap: clamp(36px, 5vw, 64px);
   }
 
   .step-grid {
@@ -487,7 +491,7 @@ input:focus {
 .btn-primary {
   background: linear-gradient(180deg, #78f5a1, var(--accent));
   color: #041009;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 700;
   font-size: 15px;
   padding: 12px 24px;
@@ -515,7 +519,7 @@ input:focus {
 .btn-ghost {
   background: rgba(255, 255, 255, 0.03);
   color: var(--text-primary);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 600;
   font-size: 15px;
   padding: 12px 24px;
@@ -561,6 +565,7 @@ input:focus {
 
   .landing-preview {
     min-height: auto;
+    width: 100%;
   }
 
   .preview-panel {
