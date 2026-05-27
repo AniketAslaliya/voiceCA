@@ -3,17 +3,28 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
-const { OpenAI, toFile } = require("openai");
+const Groq = require("groq-sdk");
+const { toFile } = require("groq-sdk");
 
 const app = express();
 const port = process.env.PORT || 3001;
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const upload = multer({ storage: multer.memoryStorage() });
+
+const GROQ_TRANSCRIBE_MODEL = "whisper-large-v3-turbo";
+const GROQ_INTENT_MODEL = "llama-3.3-70b-versatile";
+const GROQ_VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
+const CURRENT_DATE = new Date().toISOString().slice(0, 10);
+
+function hasGroqKey() {
+  return process.env.GROQ_API_KEY && process.env.GROQ_API_KEY !== "your_groq_key_here";
+}
 
 const INTENT_PROMPT = `
 You are VoiceCA, an AI assistant that helps non-technical Indian
 small business owners manage their business by voice.
 
+Today is ${CURRENT_DATE}. Use this as the reference date.
 The user has spoken in Hindi, English, or Hinglish.
 Your job is to:
 1. Identify the intent: credit_entry | insurance_claim | expense |
@@ -26,8 +37,13 @@ RULES:
 - Always output valid JSON
 - Amounts are always in Indian Rupees
 - Dates default to today if not specified
+- If a date has day and month but no year, use the current year from today's date
+- Return normalized dates as YYYY-MM-DD where possible
 - Names use title case
 - If intent is unclear, set type: "clarification_needed"
+- For credit_entry entities use: person, amount, date, item if available
+- For insurance_claim entities use: client, claim_type, accident_date, amount, status
+- For expense entities use: category, amount, date, paid_to if available
 
 OUTPUT FORMAT:
 {
@@ -39,19 +55,38 @@ OUTPUT FORMAT:
 }
 `;
 
+const DOCUMENT_PROMPT = `
+You are VoiceCA. Read the uploaded business document, notice, bill, or letter.
+Return simple JSON for a non-technical Indian small business owner.
+
+OUTPUT FORMAT:
+{
+  "type": "document_query",
+  "document_type": "short type",
+  "explanation_hindi": "plain Hindi explanation under 40 words",
+  "summary_english": "short English summary",
+  "action_required": "exact next action",
+  "draft_reply_english": "short formal reply if useful"
+}
+`;
+
 const entries = [];
 
 app.use(cors());
 app.use(express.json());
 
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({
+    status: "ok",
+    provider: "groq",
+    hasGroqKey: hasGroqKey(),
+  });
 });
 
 app.post("/api/transcribe", upload.single("file"), async (req, res) => {
   try {
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "your_key_here") {
-      return res.status(500).json({ error: "Set OPENAI_API_KEY in backend/.env" });
+    if (!hasGroqKey()) {
+      return res.status(500).json({ error: "Set GROQ_API_KEY in backend/.env" });
     }
 
     if (!req.file) {
@@ -64,9 +99,11 @@ app.post("/api/transcribe", upload.single("file"), async (req, res) => {
       { type: req.file.mimetype || "audio/webm" },
     );
 
-    const transcription = await client.audio.transcriptions.create({
+    const transcription = await groq.audio.transcriptions.create({
       file,
-      model: "whisper-1",
+      model: GROQ_TRANSCRIBE_MODEL,
+      response_format: "json",
+      temperature: 0,
     });
 
     res.json({ text: transcription.text || "" });
@@ -78,8 +115,8 @@ app.post("/api/transcribe", upload.single("file"), async (req, res) => {
 
 app.post("/api/interpret", async (req, res) => {
   try {
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "your_key_here") {
-      return res.status(500).json({ error: "Set OPENAI_API_KEY in backend/.env" });
+    if (!hasGroqKey()) {
+      return res.status(500).json({ error: "Set GROQ_API_KEY in backend/.env" });
     }
 
     const { transcript } = req.body;
@@ -88,13 +125,14 @@ app.post("/api/interpret", async (req, res) => {
       return res.status(400).json({ error: "Transcript is required" });
     }
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o",
+    const completion = await groq.chat.completions.create({
+      model: GROQ_INTENT_MODEL,
       messages: [
         { role: "system", content: INTENT_PROMPT },
         { role: "user", content: transcript },
       ],
       response_format: { type: "json_object" },
+      temperature: 0,
     });
 
     const data = JSON.parse(completion.choices[0].message.content);
@@ -103,6 +141,41 @@ app.post("/api/interpret", async (req, res) => {
   } catch (error) {
     console.error("Intent extraction failed:", error);
     res.status(500).json({ error: "Intent extraction failed" });
+  }
+});
+
+app.post("/api/scan-document", async (req, res) => {
+  try {
+    if (!hasGroqKey()) {
+      return res.status(500).json({ error: "Set GROQ_API_KEY in backend/.env" });
+    }
+
+    const { image } = req.body;
+
+    if (!image) {
+      return res.status(400).json({ error: "Image is required" });
+    }
+
+    const completion = await groq.chat.completions.create({
+      model: GROQ_VISION_MODEL,
+      messages: [
+        { role: "system", content: DOCUMENT_PROMPT },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: "Explain this document for the user." },
+            { type: "image_url", image_url: { url: image } },
+          ],
+        },
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0,
+    });
+
+    res.json(JSON.parse(completion.choices[0].message.content));
+  } catch (error) {
+    console.error("Document scan failed:", error);
+    res.status(500).json({ error: "Document scan failed" });
   }
 });
 
