@@ -14,8 +14,9 @@ import {
   getPersonalizedTips,
   getSuggestedCategories,
 } from "../lib/personalization";
+import { gettext } from "../lib/langHelper";
 
-const tabs = ["Speak", "Summary", "Entries", "Scan Doc"];
+const tabKeys = ["speak", "summary", "entries", "scan"];
 
 function todayLabel() {
   return new Intl.DateTimeFormat("en-IN", {
@@ -35,7 +36,7 @@ function saveEntries(entries) {
 }
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("Speak");
+  const [activeTab, setActiveTab] = useState("speak");
   const [recordingState, setRecordingState] = useState("idle");
   const [transcriptText, setTranscriptText] = useState("");
   const [result, setResult] = useState(null);
@@ -114,7 +115,7 @@ export default function Dashboard() {
     };
     setEntries((current) => [entry, ...current]);
     setSaved(true);
-    showToast("✓ Entry saved successfully!", "success", 2000);
+    showToast(gettext("saved"), "success", 2000);
   };
 
   return (
@@ -131,26 +132,26 @@ export default function Dashboard() {
             paddingBottom: 14,
           }}
         >
-          {tabs.map((tab) => (
+          {tabKeys.map((tabKey) => (
             <button
-              key={tab}
+              key={tabKey}
               type="button"
-              onClick={() => setActiveTab(tab)}
+              onClick={() => setActiveTab(tabKey)}
               style={{
                 border: "1px solid var(--border)",
                 borderRadius: "var(--radius-full)",
                 padding: "10px 8px",
-                background: activeTab === tab ? "var(--accent)" : "transparent",
-                color: activeTab === tab ? "#050505" : "var(--text-secondary)",
+                background: activeTab === tabKey ? "var(--accent)" : "transparent",
+                color: activeTab === tabKey ? "#050505" : "var(--text-secondary)",
                 fontWeight: 700,
               }}
             >
-              {tab}
+              {gettext(tabKey)}
             </button>
           ))}
         </div>
 
-        {activeTab === "Speak" && (
+        {activeTab === "speak" && (
           <section className="fade-up dashboard-speak">
             <div className="speak-stage">
               {onboarding?.businessName && (
@@ -158,16 +159,16 @@ export default function Dashboard() {
                   {getGreeting(onboarding.businessName)}
                 </p>
               )}
-              <p style={{ color: "var(--text-secondary)", fontSize: 18 }}>Kya hua aaj?</p>
+              <p style={{ color: "var(--text-secondary)", fontSize: 18 }}>{gettext("kya_hua")}</p>
               <div style={{ display: "flex", justifyContent: "center", marginTop: 22 }}>
                 <MicButton state={recordingState} onClick={handleMicClick} />
               </div>
               <p style={{ color: "var(--text-secondary)", marginTop: 4 }}>
                 {recordingState === "recording"
-                  ? "Bolte rahiye..."
+                  ? gettext("speaking")
                   : recordingState === "processing"
-                    ? "Samajh rahe hain..."
-                    : "Tap karo aur boliye"}
+                    ? gettext("processing")
+                    : gettext("tap_speak")}
               </p>
             </div>
 
@@ -228,9 +229,9 @@ export default function Dashboard() {
           </section>
         )}
 
-        {activeTab === "Summary" && <FinancialSummary entries={entries} />}
-        {activeTab === "Entries" && <EntryList entries={entries} />}
-        {activeTab === "Scan Doc" && <DocScanner />}
+        {activeTab === "summary" && <FinancialSummary entries={entries} />}
+        {activeTab === "entries" && <EntryList entries={entries} />}
+        {activeTab === "scan" && <DocScanner />}
       </section>
     </main>
   );
