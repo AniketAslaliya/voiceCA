@@ -7,6 +7,12 @@ import NavBar from "../components/NavBar";
 import OutputCard from "../components/OutputCard";
 import { getUser } from "../lib/auth";
 import { interpret, transcribe } from "../lib/api";
+import {
+  getOnboardingData,
+  getGreeting,
+  getPersonalizedTips,
+  getSuggestedCategories,
+} from "../lib/personalization";
 
 const tabs = ["Speak", "Summary", "Entries", "Scan Doc"];
 
@@ -38,6 +44,8 @@ export default function Dashboard() {
   const mediaRef = useRef(null);
   const chunksRef = useRef([]);
   const user = getUser();
+  const onboarding = getOnboardingData();
+  const personalizedTips = onboarding ? getPersonalizedTips(onboarding.businessType) : [];
 
   useEffect(() => {
     saveEntries(entries);
@@ -140,6 +148,11 @@ export default function Dashboard() {
         {activeTab === "Speak" && (
           <section className="fade-up dashboard-speak">
             <div className="speak-stage">
+              {onboarding?.businessName && (
+                <p style={{ color: "var(--accent)", fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
+                  {getGreeting(onboarding.businessName)}
+                </p>
+              )}
               <p style={{ color: "var(--text-secondary)", fontSize: 18 }}>Kya hua aaj?</p>
               <div style={{ display: "flex", justifyContent: "center", marginTop: 22 }}>
                 <MicButton state={recordingState} onClick={handleMicClick} />
@@ -183,6 +196,29 @@ export default function Dashboard() {
               )}
 
               <OutputCard data={result} onSave={handleSave} saved={saved} />
+
+              {!result && personalizedTips.length > 0 && (
+                <article
+                  className="card fade-up"
+                  style={{
+                    padding: 16,
+                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.03))",
+                    borderColor: "rgba(59, 130, 246, 0.16)",
+                  }}
+                >
+                  <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <span style={{ fontSize: 20 }}>💡</span>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 700, marginBottom: 6 }}>
+                        PRO TIP FOR {onboarding?.businessType.toUpperCase()}
+                      </p>
+                      <p style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.5 }}>
+                        {personalizedTips[Math.floor(Math.random() * personalizedTips.length)]}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              )}
             </div>
           </section>
         )}
