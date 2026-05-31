@@ -65,6 +65,25 @@ export default function Landing() {
           <span className="landing-tag">Now multilingual across Indian languages</span>
         </header>
 
+        <div style={{
+          display: 'flex', justifyContent: 'center', marginBottom: 24
+        }}>
+          <span style={{
+            background: 'rgba(34,197,94,0.1)',
+            border: '1px solid rgba(34,197,94,0.25)',
+            borderRadius: 999,
+            padding: '6px 14px',
+            fontSize: 12,
+            fontWeight: 500,
+            color: '#22c55e',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6
+          }}>
+            🏆 3rd Place · Meta × Scaler Hackathon · 70,000+ Developers
+          </span>
+        </div>
+
         <div className="landing-layout">
           <div className="landing-copy fade-up">
             <p className="section-kicker">Voice-first business memory for India</p>
@@ -149,10 +168,10 @@ export default function Landing() {
         <section className="landing-cta card fade-up">
           <div>
             <p className="section-kicker">Ready for the first users</p>
-            <h2>Launch with a landing page that explains the product in one glance.</h2>
+            <h2>Join 63 million Indian businesses that deserve better tools.</h2>
           </div>
           <Link className="btn-primary" to="/auth">
-            Open VoiceCA
+            Try VoiceCA Free →
           </Link>
         </section>
 

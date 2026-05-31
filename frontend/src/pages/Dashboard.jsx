@@ -125,7 +125,7 @@ export default function Dashboard() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateColumns: "repeat(4, 1fr)",
             gap: 8,
             borderBottom: "1px solid var(--border)",
             paddingBottom: 14,

@@ -1,75 +1,43 @@
-# VoiceCA
+# VoiceCA — Speak Business into Structure
 
-VoiceCA is a voice-first MVP for Indian small business owners. Speak in Hindi, Hinglish, English, or other Indian languages and the app turns the note into structured business JSON.
+> Voice-first AI for India's 63 million small businesses.
+> Speak in Hindi, Hinglish, or any Indian language.
+> VoiceCA turns it into structured business records instantly.
 
-## Stack
+🌐 Live: https://voice-ca-two.vercel.app  
+📹 Demo: https://youtu.be/[add-your-demo-video-id]  
+💻 GitHub: https://github.com/AniketAslaliya/voiceCA
 
-- Frontend: Vite + React
-- Backend: Express
-- AI provider: Groq
-- Speech: `whisper-large-v3-turbo`
-- Intent JSON: `llama-3.3-70b-versatile`
-- Vision scan: `meta-llama/llama-4-scout-17b-16e-instruct`
+## The Problem
+63 million Indian SMBs run on memory and WhatsApp — not because 
+they're uneducated, but because every tool requires typing in English.
+India loses ₹10,000+ crore to insurance fraud annually. The data 
+exists in people's heads. VoiceCA gets it out.
 
-## Local Setup
+## What It Does
+Speak a credit entry, insurance claim, or expense → Whisper 
+transcribes → Llama extracts structured intent → one-tap save.
 
-```bash
-cd backend
-cp .env.example .env
-# add GROQ_API_KEY
-npm install
-npm run dev
-```
+Three use cases:
+- 💰 **Udhaari** — Credit ledger by voice
+- 📋 **Claims** — Insurance claim logging
+- 📄 **Documents** — Photo any notice, get plain Hindi explanation
 
-```bash
-cd frontend
-cp .env.example .env
-npm install
-npm run dev
-```
+## How Llama Is Used
+Llama is the intent engine — not just a text generator.
+It reads raw Hindi/Hinglish speech, identifies the business intent,
+extracts entities (person, amount, date, GST slab, deduction 
+eligibility), and returns structured JSON. Multi-language reasoning 
+over unstructured speech.
 
-Open `http://127.0.0.1:5173`.
+## Tech Stack
+- **Speech:** Groq Whisper large-v3-turbo (fastest transcription)
+- **Intent:** Llama 3.3 70B via Groq (reasoning engine)
+- **Vision:** Llama 4 Scout (document scanning)
+- **Frontend:** React + Vite → Vercel
+- **Backend:** Node.js + Express → Render
 
-## Deploy
-
-### Backend on Render
-
-1. Create a Render Blueprint from this repo, or create a Web Service manually.
-2. Root directory: `backend`
-3. Build command: `npm install`
-4. Start command: `npm start`
-5. Add environment variable: `GROQ_API_KEY`
-6. Health check path: `/health`
-
-`render.yaml` is included for blueprint deployment.
-
-### Backend on Railway
-
-1. Create a Railway service from this repo.
-2. Set root directory to `backend`.
-3. Add `GROQ_API_KEY`.
-4. Railway can use `backend/Procfile` or `npm start`.
-
-### Frontend on Vercel
-
-1. Import this repo into Vercel.
-2. Root directory: `frontend`
-3. Build command: `npm run build`
-4. Output directory: `dist`
-5. Add environment variable:
-
-```env
-VITE_API_URL=https://your-backend-url
-```
-
-`frontend/vercel.json` is included for SPA routing.
-
-## MVP Smoke Tests
-
-- `cd frontend && npm run build`
-- `cd frontend && npm run lint`
-- `cd backend && node -c index.js`
-- `GET /health`
-- `POST /api/interpret`
-- `POST /api/transcribe`
-- `POST /api/scan-document`
+## Built By
+Aniket Aslaliya · LNMIIT  
+🏆 3rd Place — Meta PyTorch × Scaler Hackathon 2026 (70,000+ developers)  
+OpenAI × Outskill AI Builders Hackathon 2026
