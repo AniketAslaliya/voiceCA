@@ -3,23 +3,23 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
-const axios = require("axios");
+const Groq = require("groq-sdk");
+const { toFile } = require("groq-sdk");
 
 const app = express();
 const port = process.env.PORT || 3001;
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const upload = multer({ storage: multer.memoryStorage() });
 
-const AI_PROVIDER = process.env.AI_PROVIDER || "gemini";
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GROQ_TRANSCRIBE_MODEL = "whisper-large-v3-turbo";
+const GROQ_INTENT_MODEL = "llama-3.3-70b-versatile";
+const GROQ_VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 const CURRENT_DATE = new Date().toISOString().slice(0, 10);
 const SUPPORTED_LANGUAGES =
   "Hindi, Hinglish, English, Marathi, Gujarati, Bengali, Tamil, Telugu, Kannada, Malayalam, Punjabi, and Odia";
 
-function hasApiKey() {
-  if (AI_PROVIDER === "gemini") {
-    return GEMINI_API_KEY && GEMINI_API_KEY !== "your_gemini_key_here";
-  }
-  return false;
+function hasGroqKey() {
+  return process.env.GROQ_API_KEY && process.env.GROQ_API_KEY !== "your_groq_key_here";
 }
 
 const INTENT_PROMPT = `
@@ -104,58 +104,45 @@ app.use(express.json());
 app.get("/health", (req, res) => {
   res.json({
     status: "ok",
-    provider: AI_PROVIDER,
-    hasApiKey: hasApiKey(),
+    provider: "groq",
+    hasGroqKey: hasGroqKey(),
   });
 });
 
 app.post("/api/transcribe", upload.single("file"), async (req, res) => {
   try {
-    if (!hasApiKey()) {
-      return res.status(500).json({ error: `Set ${AI_PROVIDER.toUpperCase()}_API_KEY in backend/.env` });
+    if (!hasGroqKey()) {
+      return res.status(500).json({ error: "Set GROQ_API_KEY in backend/.env" });
     }
 
     if (!req.file) {
       return res.status(400).json({ error: "Audio file is required" });
     }
 
-    const base64Audio = req.file.buffer.toString("base64");
-    const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        contents: [
-          {
-            parts: [
-              {
-                inline_data: {
-                  mime_type: "audio/webm",
-                  data: base64Audio,
-                },
-              },
-              {
-                text: "Transcribe this audio and return only the transcribed text as JSON with key 'text'.",
-              },
-            ],
-          },
-        ],
-      },
+    const file = await toFile(
+      req.file.buffer,
+      req.file.originalname || "audio.webm",
+      { type: req.file.mimetype || "audio/webm" },
     );
 
-    const content = response.data.candidates[0].content.parts[0].text;
-    const jsonMatch = content.match(/"text":\s*"([^"]*)"/);
-    const text = jsonMatch ? jsonMatch[1] : content;
+    const transcription = await groq.audio.transcriptions.create({
+      file,
+      model: GROQ_TRANSCRIBE_MODEL,
+      response_format: "json",
+      temperature: 0,
+    });
 
-    res.json({ text });
+    res.json({ text: transcription.text || "" });
   } catch (error) {
-    console.error("Transcription failed:", error.response?.data || error.message);
+    console.error("Transcription failed:", error);
     res.status(500).json({ error: "Transcription failed" });
   }
 });
 
 app.post("/api/interpret", async (req, res) => {
   try {
-    if (!hasApiKey()) {
-      return res.status(500).json({ error: `Set ${AI_PROVIDER.toUpperCase()}_API_KEY in backend/.env` });
+    if (!hasGroqKey()) {
+      return res.status(500).json({ error: "Set GROQ_API_KEY in backend/.env" });
     }
 
     const { transcript } = req.body;
@@ -164,38 +151,29 @@ app.post("/api/interpret", async (req, res) => {
       return res.status(400).json({ error: "Transcript is required" });
     }
 
-    const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        contents: [
-          {
-            parts: [
-              {
-                text: INTENT_PROMPT + "\n\nUser input: " + transcript,
-              },
-            ],
-          },
-        ],
-      },
-    );
+    const completion = await groq.chat.completions.create({
+      model: GROQ_INTENT_MODEL,
+      messages: [
+        { role: "system", content: INTENT_PROMPT },
+        { role: "user", content: transcript },
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0,
+    });
 
-    const content = response.data.candidates[0].content.parts[0].text;
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    const jsonStr = jsonMatch ? jsonMatch[0] : content;
-    const data = JSON.parse(jsonStr);
-
+    const data = JSON.parse(completion.choices[0].message.content);
     entries.push({ ...data, transcript, created_at: new Date().toISOString() });
     res.json(data);
   } catch (error) {
-    console.error("Intent extraction failed:", error.response?.data || error.message);
+    console.error("Intent extraction failed:", error);
     res.status(500).json({ error: "Intent extraction failed" });
   }
 });
 
 app.post("/api/scan-document", async (req, res) => {
   try {
-    if (!hasApiKey()) {
-      return res.status(500).json({ error: `Set ${AI_PROVIDER.toUpperCase()}_API_KEY in backend/.env` });
+    if (!hasGroqKey()) {
+      return res.status(500).json({ error: "Set GROQ_API_KEY in backend/.env" });
     }
 
     const { image } = req.body;
@@ -204,34 +182,25 @@ app.post("/api/scan-document", async (req, res) => {
       return res.status(400).json({ error: "Image is required" });
     }
 
-    const base64Image = image.replace(/^data:image\/[a-z]+;base64,/, "");
-    const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        contents: [
-          {
-            parts: [
-              {
-                inline_data: {
-                  mime_type: "image/png",
-                  data: base64Image,
-                },
-              },
-              {
-                text: "Analyze this document/image and return JSON with: 'title', 'description', 'action_items', 'tax_implications'",
-              },
-            ],
-          },
-        ],
-      },
-    );
+    const completion = await groq.chat.completions.create({
+      model: GROQ_VISION_MODEL,
+      messages: [
+        { role: "system", content: DOCUMENT_PROMPT },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: "Explain this document for the user." },
+            { type: "image_url", image_url: { url: image } },
+          ],
+        },
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0,
+    });
 
-    const content = response.data.candidates[0].content.parts[0].text;
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    const jsonStr = jsonMatch ? jsonMatch[0] : content;
-    res.json(JSON.parse(jsonStr));
+    res.json(JSON.parse(completion.choices[0].message.content));
   } catch (error) {
-    console.error("Document scan failed:", error.response?.data || error.message);
+    console.error("Document scan failed:", error);
     res.status(500).json({ error: "Document scan failed" });
   }
 });
