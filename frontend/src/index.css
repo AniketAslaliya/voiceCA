@@ -341,15 +341,24 @@ label {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0;
+  display: grid;
+  gap: 24px;
 }
 
 .dashboard-speak {
-  display: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
 }
 
 .speak-stage {
-  display: none;
+  text-align: center;
+  padding: 32px 0;
+  display: grid;
+  place-content: center;
+  gap: 20px;
+  min-height: 400px;
 }
 
 @media (min-width: 760px) {
