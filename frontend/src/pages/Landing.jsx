@@ -49,6 +49,14 @@ const uiText = {
   hi: { getStarted: "शुरू करें", tryDemo: "डेमो आजमाएँ", language: "भाषा" },
   gu: { getStarted: "શરુ કરો", tryDemo: "ડેમો કરો", language: "ભાષા" },
   mr: { getStarted: "सुरु करा", tryDemo: "डेमो करा", language: "भाषा" },
+  hi_hinglish: { getStarted: "Get Started", tryDemo: "Try Demo", language: "Bhasha" },
+  bn: { getStarted: "শুরু করুন", tryDemo: "ডেমো চেষ্টা করুন", language: "ভাষা" },
+  ta: { getStarted: "தொடங்க", tryDemo: "டெமோ시도", language: "மொழி" },
+  te: { getStarted: "ప్రారంభించండి", tryDemo: "డెమో ప్రయత్నించండి", language: "భాష" },
+  kn: { getStarted: "ಪ್ರಾರಂಭಿಸಿ", tryDemo: "ಡೆಮೊ ಪ್ರಯತ್ನಿಸಿ", language: "ಭಾಷೆ" },
+  ml: { getStarted: "ആരംഭിക്കുക", tryDemo: "ഡെമോ പരീക്ഷിക്കുക", language: "ഭാഷ" },
+  pa: { getStarted: "ਸ਼ੁਰੂ ਕਰੋ", tryDemo: "ਡੈਮੋ ਆਜ਼ਮਾਓ", language: "ਭਾਸ਼ਾ" },
+  or: { getStarted: "ଆରମ୍ଭ କରନ୍ତୁ", tryDemo: "ଡେମୋ ଚେଷ୍ଟା କରନ୍ତୁ", language: "ଭାଷା" },
 };
 
 export default function Landing() {
@@ -73,25 +81,47 @@ export default function Landing() {
   return (
     <main className="app-shell landing-shell">
       <section className="page landing-page">
-        <header className="landing-topbar fade-up" style={{ justifyContent: "space-between" }}>
+        <header className="landing-topbar fade-up" style={{ justifyContent: "space-between", alignItems: "center" }}>
           <Link className="brand-lockup" to="/">
             <span className="logo-mark" />
             <span>VoiceCA</span>
           </Link>
-          <select value={lang} onChange={handleLanguageChange} style={{
-            padding: "8px 12px",
-            borderRadius: "var(--radius-sm)",
-            border: "1px solid var(--border)",
-            background: "var(--bg-secondary)",
-            color: "var(--text-primary)",
-            fontSize: "14px",
-            cursor: "pointer",
-          }}>
-            <option value="en">English</option>
-            <option value="hi">हिंदी</option>
-            <option value="gu">ગુજરાતી</option>
-            <option value="mr">मराठी</option>
-          </select>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500 }}>🌍</span>
+            <select value={lang} onChange={handleLanguageChange} style={{
+              padding: "10px 14px",
+              borderRadius: "var(--radius-md)",
+              border: "2px solid var(--border)",
+              background: "linear-gradient(135deg, var(--bg-secondary), rgba(255,255,255,0.02))",
+              color: "var(--text-primary)",
+              fontSize: "13px",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              minWidth: "140px",
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "var(--accent)";
+              e.target.style.boxShadow = "0 0 0 3px rgba(74, 222, 128, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "var(--border)";
+              e.target.style.boxShadow = "none";
+            }}>
+              <option value="en">English</option>
+              <option value="hi">हिंदी</option>
+              <option value="hi_hinglish">Hinglish</option>
+              <option value="gu">ગુજરાતી</option>
+              <option value="mr">मराठी</option>
+              <option value="bn">বাংলা</option>
+              <option value="ta">தமிழ்</option>
+              <option value="te">తెలుగు</option>
+              <option value="kn">ಕನ್ನಡ</option>
+              <option value="ml">മലയാളം</option>
+              <option value="pa">ਪੰਜਾਬੀ</option>
+              <option value="or">ଓଡ଼ିଆ</option>
+            </select>
+          </div>
         </header>
 
         <div style={{
