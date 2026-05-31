@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import DocScanner from "../components/DocScanner";
 import EntryList from "../components/EntryList";
+import FinancialSummary from "../components/FinancialSummary";
 import MicButton from "../components/MicButton";
 import NavBar from "../components/NavBar";
 import OutputCard from "../components/OutputCard";
 import { getUser } from "../lib/auth";
 import { interpret, transcribe } from "../lib/api";
 
-const tabs = ["Speak", "Entries", "Scan Doc"];
+const tabs = ["Speak", "Summary", "Entries", "Scan Doc"];
 
 function todayLabel() {
   return new Intl.DateTimeFormat("en-IN", {
@@ -186,6 +187,7 @@ export default function Dashboard() {
           </section>
         )}
 
+        {activeTab === "Summary" && <FinancialSummary entries={entries} />}
         {activeTab === "Entries" && <EntryList entries={entries} />}
         {activeTab === "Scan Doc" && <DocScanner />}
       </section>

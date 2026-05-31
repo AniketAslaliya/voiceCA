@@ -98,6 +98,58 @@ export default function OutputCard({ data, onSave, saved }) {
         </span>
       </div>
 
+      {/* Tax Summary Section */}
+      {data.tax_summary && (
+        <div
+          style={{
+            border: "1px solid rgba(168, 85, 247, 0.24)",
+            borderRadius: "var(--radius-md)",
+            background: "linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(168, 85, 247, 0.03))",
+            padding: 14,
+            display: "grid",
+            gap: 10,
+          }}
+        >
+          <span
+            style={{
+              color: "#a855f7",
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+            }}
+          >
+            💰 Tax Impact
+          </span>
+          <div style={{ display: "grid", gap: 8 }}>
+            {data.tax_summary.taxable_amount && (
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+                <span style={{ color: "var(--text-secondary)" }}>Taxable amount:</span>
+                <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>
+                  ₹{data.tax_summary.taxable_amount.toLocaleString?.("en-IN") || data.tax_summary.taxable_amount}
+                </span>
+              </div>
+            )}
+            {data.tax_summary.estimated_tax && (
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+                <span style={{ color: "var(--text-secondary)" }}>Tax impact:</span>
+                <span style={{ color: "#a855f7", fontWeight: 600 }}>
+                  {data.tax_summary.estimated_tax}
+                </span>
+              </div>
+            )}
+            {data.entities?.gst_slab && (
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+                <span style={{ color: "var(--text-secondary)" }}>GST slab:</span>
+                <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>
+                  {data.entities.gst_slab} (₹{Math.round(data.entities.gst_amount || 0).toLocaleString?.("en-IN") || 0})
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <div
         style={{
           border: "1px solid rgba(255, 255, 255, 0.08)",
