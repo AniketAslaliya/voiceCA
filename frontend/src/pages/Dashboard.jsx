@@ -118,36 +118,31 @@ export default function Dashboard() {
   };
 
   return (
-    <main className=”app-shell”>
+    <main className="app-shell">
       <Toast />
       <NavBar user={user} />
-      <section className=”page dashboard-page”>
-        {/* Tab Navigation - Fixed Alignment */}
+      <section className="page dashboard-page" style={{ display: "grid", gap: 20 }}>
         <div
           style={{
-            display: “grid”,
-            gridTemplateColumns: “repeat(4, 1fr)”,
-            gap: 12,
-            marginBottom: 24,
-            padding: “0 0 16px 0”,
-            borderBottom: “1px solid var(--border)”,
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 8,
+            borderBottom: "1px solid var(--border)",
+            paddingBottom: 14,
           }}
         >
           {tabs.map((tab) => (
             <button
               key={tab}
-              type=”button”
+              type="button"
               onClick={() => setActiveTab(tab)}
               style={{
-                padding: “10px 12px”,
-                background: activeTab === tab ? “var(--accent)” : “rgba(255,255,255,0.03)”,
-                color: activeTab === tab ? “#050505” : “var(--text-secondary)”,
-                fontWeight: activeTab === tab ? 700 : 600,
-                border: activeTab === tab ? “none” : “1px solid var(--border)”,
-                borderRadius: “var(--radius-full)”,
-                cursor: “pointer”,
-                transition: “all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)”,
-                fontSize: 14,
+                border: "1px solid var(--border)",
+                borderRadius: "var(--radius-full)",
+                padding: "10px 8px",
+                background: activeTab === tab ? "var(--accent)" : "transparent",
+                color: activeTab === tab ? "#050505" : "var(--text-secondary)",
+                fontWeight: 700,
               }}
             >
               {tab}
@@ -155,79 +150,87 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Speak Tab */}
-        {activeTab === “Speak” && (
-          <div style={{ display: “grid”, gap: 20, gridTemplateColumns: “1fr 1fr”, alignItems: “start” }}>
-            {/* Left: Recording Stage */}
-            <div style={{ display: “grid”, gap: 20, placeItems: “center”, minHeight: “400px” }}>
-              <div style={{ textAlign: “center”, display: “grid”, gap: 16 }}>
-                {onboarding?.businessName && (
-                  <p style={{ color: “var(--accent)”, fontSize: 16, fontWeight: 600 }}>
-                    {getGreeting(onboarding.businessName)}
-                  </p>
-                )}
-                <p style={{ color: “var(--text-secondary)”, fontSize: 20, fontWeight: 500 }}>Kya hua aaj?</p>
-                <MicButton state={recordingState} onClick={handleMicClick} />
-                <p style={{ color: “var(--text-secondary)”, fontSize: 14 }}>
-                  {recordingState === “recording”
-                    ? “🎙️ Bolte rahiye...”
-                    : recordingState === “processing”
-                      ? “⏳ Samajh rahe hain...”
-                      : “📱 Tap karo aur boliye”}
+        {activeTab === "Speak" && (
+          <section className="fade-up dashboard-speak">
+            <div className="speak-stage">
+              {onboarding?.businessName && (
+                <p style={{ color: "var(--accent)", fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
+                  {getGreeting(onboarding.businessName)}
                 </p>
+              )}
+              <p style={{ color: "var(--text-secondary)", fontSize: 18 }}>Kya hua aaj?</p>
+              <div style={{ display: "flex", justifyContent: "center", marginTop: 22 }}>
+                <MicButton state={recordingState} onClick={handleMicClick} />
               </div>
+              <p style={{ color: "var(--text-secondary)", marginTop: 4 }}>
+                {recordingState === "recording"
+                  ? "Bolte rahiye..."
+                  : recordingState === "processing"
+                    ? "Samajh rahe hain..."
+                    : "Tap karo aur boliye"}
+              </p>
             </div>
 
-            {/* Right: Results */}
-            <div style={{ display: “grid”, gap: 16, alignContent: “start” }}>
+            <div style={{ display: "grid", gap: 18, alignContent: "start" }}>
               {transcriptText && (
-                <div style={{ padding: 12, background: “rgba(255,255,255,0.05)”, borderRadius: “var(--radius-md)” }}>
-                  <p style={{ color: “var(--text-secondary)”, fontSize: 12, marginBottom: 6 }}>Transcript:</p>
-                  <p style={{ color: “var(--text-primary)”, fontSize: 14, lineHeight: 1.5 }}>”{transcriptText}”</p>
-                </div>
+                <p
+                  style={{
+                    color: "var(--text-muted)",
+                    fontStyle: "italic",
+                    lineHeight: 1.5,
+                    textAlign: "center",
+                  }}
+                >
+                  “{transcriptText}”
+                </p>
               )}
 
               {error && (
-                <div style={{
-                  border: “1px solid rgba(239, 68, 68, 0.35)”,
-                  background: “rgba(239, 68, 68, 0.08)”,
-                  color: “var(--error)”,
-                  borderRadius: “var(--radius-sm)”,
-                  padding: 12,
-                  fontSize: 14,
-                }}>
-                  ⚠️ {error}
+                <div
+                  style={{
+                    border: "1px solid rgba(239, 68, 68, 0.35)",
+                    background: "rgba(239, 68, 68, 0.08)",
+                    color: "var(--error)",
+                    borderRadius: "var(--radius-sm)",
+                    padding: 12,
+                    fontSize: 14,
+                  }}
+                >
+                  {error}
                 </div>
               )}
 
-              {result && <OutputCard data={result} onSave={handleSave} saved={saved} />}
+              <OutputCard data={result} onSave={handleSave} saved={saved} />
 
               {!result && personalizedTips.length > 0 && (
-                <article className=”card” style={{
-                  padding: 14,
-                  background: “linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.03))”,
-                  borderColor: “rgba(59, 130, 246, 0.16)”,
-                }}>
-                  <p style={{ fontSize: 11, color: “var(--text-secondary)”, fontWeight: 700, marginBottom: 8, textTransform: “uppercase” }}>
-                    💡 Pro Tip
-                  </p>
-                  <p style={{ fontSize: 13, color: “var(--text-primary)”, lineHeight: 1.5 }}>
-                    {personalizedTips[Math.floor(Math.random() * personalizedTips.length)]}
-                  </p>
+                <article
+                  className="card fade-up"
+                  style={{
+                    padding: 16,
+                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.03))",
+                    borderColor: "rgba(59, 130, 246, 0.16)",
+                  }}
+                >
+                  <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <span style={{ fontSize: 20 }}>💡</span>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 700, marginBottom: 6 }}>
+                        PRO TIP FOR {onboarding?.businessType.toUpperCase()}
+                      </p>
+                      <p style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.5 }}>
+                        {personalizedTips[Math.floor(Math.random() * personalizedTips.length)]}
+                      </p>
+                    </div>
+                  </div>
                 </article>
               )}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Summary Tab */}
-        {activeTab === “Summary” && <FinancialSummary entries={entries} />}
-
-        {/* Entries Tab */}
-        {activeTab === “Entries” && <EntryList entries={entries} />}
-
-        {/* Scan Doc Tab */}
-        {activeTab === “Scan Doc” && <DocScanner />}
+        {activeTab === "Summary" && <FinancialSummary entries={entries} />}
+        {activeTab === "Entries" && <EntryList entries={entries} />}
+        {activeTab === "Scan Doc" && <DocScanner />}
       </section>
     </main>
   );
