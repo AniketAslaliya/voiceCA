@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { loginAsDemo, createSampleOnboarding } from "../lib/demoAuth";
 
 const highlights = [
@@ -43,8 +44,23 @@ const steps = [
   },
 ];
 
+const uiText = {
+  en: { getStarted: "Get Started", tryDemo: "Try Demo", language: "Language" },
+  hi: { getStarted: "शुरू करें", tryDemo: "डेमो आजमाएँ", language: "भाषा" },
+  gu: { getStarted: "શરુ કરો", tryDemo: "ડેમો કરો", language: "ભાષા" },
+  mr: { getStarted: "सुरु करा", tryDemo: "डेमो करा", language: "भाषा" },
+};
+
 export default function Landing() {
   const navigate = useNavigate();
+  const [lang, setLang] = useState(() => localStorage.getItem("voiceca_ui_lang") || "en");
+
+  const handleLanguageChange = (e) => {
+    setLang(e.target.value);
+    localStorage.setItem("voiceca_ui_lang", e.target.value);
+  };
+
+  const t = (key) => uiText[lang]?.[key] || uiText.en[key];
 
   const handleTryDemo = () => {
     loginAsDemo();
@@ -57,12 +73,25 @@ export default function Landing() {
   return (
     <main className="app-shell landing-shell">
       <section className="page landing-page">
-        <header className="landing-topbar fade-up">
+        <header className="landing-topbar fade-up" style={{ justifyContent: "space-between" }}>
           <Link className="brand-lockup" to="/">
             <span className="logo-mark" />
             <span>VoiceCA</span>
           </Link>
-          <span className="landing-tag">Now multilingual across Indian languages</span>
+          <select value={lang} onChange={handleLanguageChange} style={{
+            padding: "8px 12px",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--border)",
+            background: "var(--bg-secondary)",
+            color: "var(--text-primary)",
+            fontSize: "14px",
+            cursor: "pointer",
+          }}>
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="gu">ગુજરાતી</option>
+            <option value="mr">मराठी</option>
+          </select>
         </header>
 
         <div style={{
@@ -111,14 +140,14 @@ export default function Landing() {
 
             <div className="landing-actions">
               <Link className="btn-primary" to="/auth">
-                Start free
+                {t("getStarted")}
               </Link>
               <button
                 className="btn-ghost"
                 onClick={handleTryDemo}
                 style={{ border: "1px solid var(--accent)", color: "var(--accent)" }}
               >
-                ✨ Try Demo
+                ✨ {t("tryDemo")}
               </button>
             </div>
 
