@@ -5,6 +5,7 @@ import FinancialSummary from "../components/FinancialSummary";
 import MicButton from "../components/MicButton";
 import NavBar from "../components/NavBar";
 import OutputCard from "../components/OutputCard";
+import Toast, { showToast } from "../components/Toast";
 import { getUser } from "../lib/auth";
 import { interpret, transcribe } from "../lib/api";
 import {
@@ -73,7 +74,9 @@ export default function Dashboard() {
         const interpreted = await interpret(text);
         setResult(interpreted);
       } catch (error) {
-        setError(error.message);
+        const errorMsg = error.message || "Error processing audio";
+        setError(errorMsg);
+        showToast(errorMsg, "error", 3000);
       } finally {
         stream.getTracks().forEach((track) => track.stop());
         setRecordingState("idle");
@@ -111,10 +114,12 @@ export default function Dashboard() {
     };
     setEntries((current) => [entry, ...current]);
     setSaved(true);
+    showToast("✓ Entry saved successfully!", "success", 2000);
   };
 
   return (
     <main className="app-shell">
+      <Toast />
       <NavBar user={user} />
       <section className="page dashboard-page" style={{ display: "grid", gap: 20 }}>
         <div

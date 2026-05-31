@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginAsDemo, createSampleOnboarding } from "../lib/demoAuth";
 
 const highlights = [
   { value: "15 sec", label: "speech to structured JSON" },
@@ -43,6 +44,16 @@ const steps = [
 ];
 
 export default function Landing() {
+  const navigate = useNavigate();
+
+  const handleTryDemo = () => {
+    loginAsDemo();
+    const onboarding = createSampleOnboarding();
+    localStorage.setItem("voiceca_onboarding", JSON.stringify(onboarding));
+    localStorage.setItem("voiceca_hasOnboarded", "true");
+    navigate("/app");
+  };
+
   return (
     <main className="app-shell landing-shell">
       <section className="page landing-page">
@@ -83,9 +94,13 @@ export default function Landing() {
               <Link className="btn-primary" to="/auth">
                 Start free
               </Link>
-              <a className="btn-ghost" href="#how-it-works">
-                See how it works
-              </a>
+              <button
+                className="btn-ghost"
+                onClick={handleTryDemo}
+                style={{ border: "1px solid var(--accent)", color: "var(--accent)" }}
+              >
+                ✨ Try Demo
+              </button>
             </div>
 
             <div className="metric-grid">
