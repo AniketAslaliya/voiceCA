@@ -339,19 +339,17 @@ label {
 
 .dashboard-page {
   width: 100%;
-  max-width: 860px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0;
 }
 
 .dashboard-speak {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 22px;
+  display: none;
 }
 
 .speak-stage {
-  text-align: center;
-  padding-top: 26px;
+  display: none;
 }
 
 @media (min-width: 760px) {
