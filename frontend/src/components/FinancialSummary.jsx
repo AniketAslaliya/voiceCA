@@ -1,4 +1,7 @@
+import { getOnboardingData, getGreeting } from "../lib/personalization";
+
 export default function FinancialSummary({ entries }) {
+  const onboarding = getOnboardingData();
   function calculateStats(entries = []) {
     let totalIncome = 0;
     let totalExpense = 0;
@@ -52,16 +55,35 @@ export default function FinancialSummary({ entries }) {
 
   if (!entries.length) {
     return (
-      <section
-        className="card fade-up"
-        style={{
-          padding: 24,
-          textAlign: "center",
-          color: "var(--text-secondary)",
-        }}
-      >
-        <div style={{ fontSize: 32, marginBottom: 12 }}>📊</div>
-        <p>Entries add hone se financial summary dikhai dega.</p>
+      <section style={{ display: "grid", gap: 20 }}>
+        {onboarding?.businessName && (
+          <article className="card fade-up" style={{ padding: 20, background: "linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(74, 222, 128, 0.05))", borderColor: "rgba(74, 222, 128, 0.2)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 16 }}>
+              <div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>
+                  {getGreeting(onboarding.businessName)}
+                </h3>
+                <p style={{ color: "var(--text-secondary)", fontSize: 14, marginTop: 6 }}>
+                  Ready to log your first entry? Speak naturally in {onboarding.language}, and we'll handle the rest.
+                </p>
+              </div>
+              <span style={{ fontSize: 32 }}>📊</span>
+            </div>
+          </article>
+        )}
+
+        <article
+          className="card fade-up"
+          style={{
+            padding: 24,
+            textAlign: "center",
+            color: "var(--text-secondary)",
+          }}
+        >
+          <div style={{ fontSize: 32, marginBottom: 12 }}>📝</div>
+          <p>Entries add hone se financial summary dikhai dega.</p>
+          <p style={{ fontSize: 12, marginTop: 8 }}>Tap "Speak" to record your first transaction</p>
+        </article>
       </section>
     );
   }
